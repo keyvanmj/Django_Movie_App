@@ -1,0 +1,35 @@
+{% load static %}
+{% load thumbnail %}
+
+{% if object_list is not None %}
+    {% for obj in object_list %}
+        <div class="movie-item-style-2">
+            {% thumbnail obj.get_obj_image '350x350' as im %}
+                <img src="{{ im.url  }}" alt="" class="row-list-images">
+            {% endthumbnail %}
+            <div class="mv-item-infor">
+                <h6><a href="{{ obj.get_absolute_url }}">{{ obj.title }}<span>({{ obj.release_date }})</span></a></h6>
+                <p class="rate"><i class="fa {% if obj.get_obj_rate %}fa-star{% else %}fa-star-o{% endif %}">
+                </i><span>{{ obj.get_obj_rate|join:' ' }}</span>{% if obj.get_obj_rate %}/5{% else %}<a>N/R</a>{% endif %}</p>
+                <p>
+                    <img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" width="50" height="50">
+                    {{ obj.get_obj_imdb_rate }}
+                </p>
+
+                <p class="describe">{{ obj.snippet }}</p>
+                <p class="run-time"> Run Time:
+                    {% if obj.movie_length %}{{ obj.movie_length }}{% else %}{{ obj.series_length }}{% endif %} min .
+                     <span>Release: {{ obj.release_date }}</span></p>
+                <p>Director: <a href="#">Joss Whedon</a></p>
+                <p>Stars: <a href="#">Robert Downey Jr.,</a> <a href="#">Chris Evans,</a> <a href="#"> Chris
+                    Hemsworth</a></p>
+            </div>
+        </div>
+    {% empty %}
+        <div class="movie-item-style-2">
+            <div class="mv-item-infor">
+                <h6><a>No Result found ... </a></h6>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

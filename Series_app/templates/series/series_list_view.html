@@ -1,0 +1,84 @@
+{% extends 'shared/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+Series List
+{% endblock %}
+{% url 'Search:search_view' as search_view %}
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+
+<div class="hero common-hero">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="hero-ct">
+                    {% if 'search/result' in request.path %}
+                        {% if q == '' %}
+					        <h1>all movies</h1>
+                        {% else %}
+                            <h1>you searched for : {{ q }}</h1>
+                        {% endif %}
+                        {% else %}
+                        <h1> series listing</h1>
+                    {% endif %}
+					<ul class="breadcumb">
+						<li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                            <li> <span class="ion-ios-arrow-right"></span> series listing</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="page-single">
+	<div class="container">
+		<div class="row ipad-width">
+			<div class="col-md-8 col-sm-12 col-xs-12">
+				<div class="topbar-filter">
+					{% if '/search/result' in request.path_info %}
+					<p>Found <span>{{ object_list_count }} results</span> in total</p>
+                    {% elif '/series/series_list' in request.path_info %}
+					<p id="object_list_count">Found<span> {{ object_list.count }} </span>Series</p>
+                     {% elif '/category/list/filter/' in request.get_full_path %}
+                        <p>Found <span>{{ object_list|length }} results</span> in total</p>
+                    {% endif %}
+					<label>Sort by:</label>
+					<select>
+						<option value="popularity">Popularity Descending</option>
+						<option value="popularity">Popularity Ascending</option>
+						<option value="rating">Rating Descending</option>
+						<option value="rating">Rating Ascending</option>
+						<option value="date">Release date Descending</option>
+						<option value="date">Release date Ascending</option>
+					</select>
+					<a href="movielist.html" class="list"><i class="ion-ios-list-outline "></i></a>
+					<a href="moviegrid.html" class="grid"><i class="ion-grid active"></i></a>
+				</div>
+                <div class="object_list_body">
+                    {% include 'list_templates/object_list_template.html' with object_list=object_list %}
+                </div>
+				<div class="topbar-filter">
+					<label></label>
+                    <div id="paginate">
+                        {% include 'shared/paginate/paginate.html' with page_obj=page_obj %}
+                    </div>
+				</div>
+			</div>
+                        {% include 'genres/select_genre_filter.html' with form=side_filter_form %}
+		</div>
+	</div>
+</div>
+<!-- footer section-->
+        {% render_partial 'Main:footer_partial' %}
+<!-- end of footer section-->
+
+<!-- moviegrid07:38-->
+<iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe"></iframe></body>
+
+
+{% endblock %}

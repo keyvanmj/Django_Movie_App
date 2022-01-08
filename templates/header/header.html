@@ -1,0 +1,100 @@
+{% load i18n %}
+{% load render_partial %}
+{% load static %}
+{% load search_tags %}
+{% url 'Main:home' as home_url %}
+ <!--end of preloading-->
+    {% if not request.user.is_authenticated %}
+
+        <!--login form popup-->
+        {% render_partial 'Accounts:log_in' %}
+        <!--end of login form popup-->
+
+        <!--signup form popup-->
+        {% render_partial 'Accounts:sign_up' %}
+        <!--end of signup form popup-->
+
+        <!--restore username form popup-->
+        {% render_partial 'Accounts:remind_username' %}
+        <!--end of restore username form popup-->
+    {% endif %}
+<header class="ht-header">
+    <div class="progress not-visible">
+        <div class="progress-bar"></div>
+    </div>
+    <div class="container">
+        <nav class="navbar navbar-default navbar-custom">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <div id="nav-icon1">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <a href="{% url 'Main:home' %}">
+                    <img class="logo" src="{% static 'images/logo1.png' %}" alt="" width="119" height="58">
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    {% if request.path_info != home_url %}
+                    <li>
+                        <a href="{% url 'Main:home' %}">Home <i class="fa fa-home margin-left-5p"></i></a>
+                    </li>
+                    {% endif %}
+                    <li class="dropdown first">
+                        <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
+                            movies <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="dropdown-menu level1">
+                            <li><a href="{% url 'Movies:movie_list' %}">all movies</a></li>
+                            <li><a href="{% url 'Movies:top_movies_list' %}">top movies</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown first">
+                        <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
+                            Series <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="dropdown-menu level1">
+                            <li><a href="{% url 'Series:series_list_view' %}">All Series</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    {% if request.user.is_authenticated %}
+                        <li class="dropdown first">
+                        <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
+                            {{ request.user.username }} <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="dropdown-menu level1">
+                            <li><a href="{% url 'Accounts:change_profile' %}">Profile <i class="fa fa-user"></i></a></li>
+                            <li><a href="{% url 'Accounts:log_out' %}">Logout <i class="fa fa-sign-out"></i></a></li>
+                        </ul>
+                    </li>
+
+
+                        <li class=""><a href="{% url 'Accounts:log_out' %}" id="logout_btn"> Logout <i class="fa fa-sign-out margin-left-5p"></i></a></li>
+                    {% else %}
+                        <li id="login_modal" class="loginLink" data-open="login_modal"><a href="#">LOG In</a></li>
+                        <li class="btn signupLink" data-open="signup_modal"><a href="#">sign up</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <!-- top search form -->
+        {% search_tag request %}
+
+
+    </div>
+</header>
+

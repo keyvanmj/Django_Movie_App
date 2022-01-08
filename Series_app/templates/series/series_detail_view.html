@@ -1,0 +1,377 @@
+{% extends 'shared/base.html' %}
+{% load embed_video_tags %}
+{% load thumbnail %}
+{% load static %}
+{% load render_partial %}
+{% load bootstrap5 %}
+{% load cache %}
+{% load custom_filter %}
+{% block title %}
+    Series Detail
+{% endblock %}
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+    <div class="hero" style="background-image: url('{{ object.series_background_image.url }}');height: 598px">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-single movie-single movie_single">
+        <div class="container">
+            <div class="row ipad-width2">
+                <div class="col-md-4 col-sm-12 col-xs-12">
+                    <div class="movie-img sticky-sb" style="top: 0px;">
+                        {% thumbnail object.image '380x380' as im %}
+                            <img src="{{ im.url }}" alt="">
+                        {% endthumbnail %}
+
+                                                <div class="movie-btn">
+						<div class="btn-transform transform-vertical red">
+                            <div class="trailer">
+                                <span class="close_video"></span>
+                                    {% video series.trailer 'medium' %}
+                            </div>
+							<div><a href="#" class="item item-1 redbtn"> <i class="fa fa-play"></i> Watch Trailer</a></div>
+							<div><a class="item item-2 redbtn" id="popup_trailer_btn"><i class="fa fa-play"></i></a></div>
+						</div>
+					</div>
+
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                <div class="success-msg not-visible" style="position:absolute;width:53%;margin: auto">
+                        <i class="fa fa-check" id="msg_text"></i>
+                        <span class="closebtn">x</span>
+                    </div>
+                    <div class="movie-single-ct main-content">
+                        <h1 class="bd-hd">{{ object.title }} <span>{{ object.release_date }}</span></h1>
+                        <div class="social-btn">
+                          {% if request.user.is_authenticated %}
+                                <p class="vote_title">Vote:</p>
+
+                                <form action="{{ vote_form_url }}" method="post" id="like_or_dislike_id" class="cursor_pointer">
+                                    {% csrf_token %}
+                                    {{ vote_form }}
+                                </form>
+                            {% else %}
+                                <span>Login to vote for this series</span>
+                            {% endif %}
+
+                               <form method="post" id="favourite_form" action="{% url 'Favourite:add_favourite' slug=object.series_slug pk=object.pk %}">
+                                {% csrf_token %}
+                               <p style="padding-right: 40px">
+                                   Favourite :
+                                    <i id="fav_heart" class="mouse_pointer fa fa-2x {% if favourite %}fa-heart{% else %}fa-heart-o{% endif %}"></i>
+                                </p>
+                            </form>
+
+
+                            <div class="hover-bnt">
+                                <a class="parent-btn"><img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" width="50" height="50"></a>
+                                <div class="hvr-item">
+                                    <a class="hvr-grow"><i>
+                                        {{ series.imdb_rate }}</i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="movie-rate">
+                            <div class="rate">
+                                <i class="ion-android-star"></i>
+                                <p><span id="rate_avg_id">{% for avg_key,avg_value in rate_avg.items %}{{ avg_value|default_if_none:'0'|floatformat }}{% endfor %}</span> /5<br>
+                                </p>
+                            </div>
+                            <div class="rate-star">
+                                <p>Rate This Series: </p>
+                                {% if request.user.is_authenticated %}
+                                    <form action="{{ star_rate_form }}" method="post" id="{{ object }}"
+                                      class="star-rate-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="fa fa-star btn_bg_transparent {% if review_rate > 0 %}star-checked{% endif %}" id="id_rate_0"></button>
+                                    <button type="submit" class="fa fa-star btn_bg_transparent {% if review_rate > 1 %}star-checked{% endif %}" id="id_rate_1"></button>
+                                    <button type="submit" class="fa fa-star btn_bg_transparent {% if review_rate > 2 %}star-checked{% endif %}" id="id_rate_2"></button>
+                                    <button type="submit" class="fa fa-star btn_bg_transparent {% if review_rate > 3 %}star-checked{% endif %}" id="id_rate_3"></button>
+                                    <button type="submit" class="fa fa-star btn_bg_transparent {% if review_rate > 4 %}star-checked{% endif %}" id="id_rate_4"></button>
+                                </form>
+                                    {% else %}
+                                    <p>Please
+                                        <span id="login_modal" class="loginLink" data-open="login_modal"><a class="text-white-2" href="#">LOG In</a></span> &
+                                        <span class="signupLink" data-open="signup_modal"><a href="#">Register</a></span>
+                                        for Rating</p>
+                                {% endif %}
+                            </div>
+                            <div id="confirm-box"></div>
+
+                            <div class="v-r"></div>
+
+                            <div class="vote_title">
+                                <h6 id="score_count">Status : <span>{{ vote_value|default:'N/A' }}</span></h6>
+                            </div>
+                        </div>
+                        <div class="movie-tabs">
+                            <div class="tabs">
+                                <ul class="tab-links tabs-mv">
+                                    <li class="active">
+                                        <input type="radio" id="tab1">
+                                        <label class="cursor_pointer" data-url_root="#overview" for="tab1">Overview</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab2">
+                                        <label class="cursor_pointer" data-url_root="#reviews" for="tab2">Comments</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab3">
+                                        <label class="cursor_pointer" data-url_root="#cast" for="tab3">Cast &amp; Crew</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab5">
+                                        <label class="cursor_pointer" data-url_root="#moviesrelated" for="tab5">Related Movies</label>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="overview" class="tab active">
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-12 col-xs-12">
+                                                <p>{{ object.description }}</p>
+                                                <div class="title-hd-sm">
+                                                    <h4>Photos</h4>
+                                                </div>
+                                                <div class="mvsingle-item hide-arrow ov-item slider-single-item">
+                                                    {% for img in object.screenshot_set.all %}
+                                                        <a class="img-lightbox" data-fancybox-group="gallery"
+                                                           href="{{ img.image.url }}">
+                                                        {% thumbnail img.image '450x450' as im %}
+                                                            <img src="{{ im.url }}" alt="{{ object.title }} photos">
+                                                        {% endthumbnail %}
+                                                        </a>
+                                                        {% endfor %}
+                                                </div>
+                                                <div class="title-hd-sm">
+                                                    <h4>Main Cast</h4>
+                                                </div>
+                                                <!-- movie cast -->
+                                               <div class="mvcast-item">
+                                                    {% for actor in object.cast.all %}
+                                                        <div class="cast-it">
+                                                        <div class="cast-left">
+                                                            <a href="{% url 'Person:person_movies_or_series_list' 'actor' actor.slug %}">{{ actor.title }}</a>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <!-- movie user review -->
+
+                                            </div>
+                                            <div class="col-md-4 col-xs-12 col-sm-12">
+                                                <div class="sb-it">
+                                                    <h6>Creator: </h6>
+                                                <p>
+                                                    {% for creator in object.creator.all %}
+                                                    <a href="{% url 'Person:person_movies_or_series_list' 'creator' creator.slug %}">{{ creator }}</a>
+                                                        <br>
+                                                    {% endfor %}
+                                                </p>
+                                                </div>
+                                                <div class="sb-it">
+                                                    <h6>Stars: </h6>
+                                                    <p>
+                                                        {% for actor in object.cast.all %}
+                                                        <a href="{% url 'Person:person_movies_or_series_list' 'actor' actor.slug %}">{{ actor }}</a>
+                                                            <br>
+                                                        {% endfor %}
+                                                    </p>
+                                                </div>
+                                                <div class="sb-it">
+                                                    <h6>Genres:</h6>
+                                                    <p>
+                                                        {% for genre in object.genre.all %}
+                                                        <a href="{% url 'Category:category_view' object.types genre.slug %}"> {{ genre }} </a> ,
+                                                        {% endfor %}
+                                                    </p>
+                                                </div>
+                                                <div class="sb-it">
+                                                    <h6>Release Date:</h6>
+                                                    <p>{{ object.release_date }}</p>
+                                                </div>
+                                                <div class="sb-it">
+                                                    <h6>Run Time:</h6>
+                                                    <p>{{ object.series_length }} min</p>
+                                                </div>
+
+                                                <div class="ads">
+                                                    <img src="{% static 'images/uploads/ads1.png' %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="reviews" class="tab review">
+                                        <div class="row">
+                                            <div class="rv-hd">
+                                                <div class="div">
+                                                    <h3>Related Comments</h3>
+                                                    <h2>{{ object.title }}</h2>
+                                                </div>
+                                            </div>
+                                            <div class="topbar-filter">
+                                                {% if object.commentmodel_set.count > 0 %}
+                                                <p>Found <span>{{ object.commentmodel_set.count }} comments</span> in total</p>
+                                                {% else %}
+                                                    <p><span>no comments found</span></p>
+                                                {% endif %}
+                                            </div>
+                                            {% for comment_obj in all_comments %}
+                                                <div class="mv-user-review-item">
+                                                <div class="user-infor">
+
+                                                    {% thumbnail comment_obj.user.profile.image '100x100' as im %}
+                                                        <img src="{{ im.url }}" alt="">
+                                                    {% endthumbnail %}
+                                                    <div>
+                                                        <h3>{{ comment_obj.comment_title}}</h3>
+                                                        <p class="time">
+                                                            {{ comment_obj.created_on}} by <a> {{ comment_obj.user.username }}</a>
+                                                        </p>
+                                                    </div>
+                                                {% if comment_obj.user == request.user %}
+                                                <div id="edit_section">
+                                                        <a class="delete_link hvr-pop trigger_popup_fricc" id="delete_comment" href="{% url 'Comments:comment_delete' pk=comment_obj.id %}">
+                                                            <i class="fa fa-trash-o fa-2x"></i>
+                                                        </a>
+                                                    <br>
+                                                        <a class="update_link hvr-pop trigger_popup_fricc" id="update_comment" href="{% url 'Comments:comment_update' pk=comment_obj.id %}">
+                                                            <i class="fa fa-pencil-square fa-2x"></i>
+                                                        </a>
+                                                </div>
+                                                {% endif %}
+                                                </div>
+                                                <p>{{ comment_obj.content }}</p>
+                                            </div>
+                                            {% endfor %}
+                                            {% if request.user.is_authenticated %}
+                                            <div class="mv-user-review-item last">
+                                                <form method="post" class="fcs-input" autocomplete="off">
+                                                    {% csrf_token %}
+                                                    <p>
+                                                        {{ comment_form }}
+                                                    </p>
+                                                    <br>
+                                                    <button type="submit" class="redbtn">send</button>
+                                                </form>
+                                            </div>
+                                                {% else %}
+                                                <br>
+                                                <div>
+                                                     <h6 style="color: whitesmoke;">for adding comment please
+                                                        <span id="login_modal" class="loginLink redbtn" data-open="login_modal"><a class="text-white-2" href="#">LOG In</a></span> &
+                                                        <span class="signupLink yellowbtn" data-open="signup_modal"><a href="#">sign up</a></span>
+                                                    </h6>
+                                                </div>
+                                                <br>
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+                                    <div id="cast" class="tab">
+                                        <div class="row">
+                                            <h3>Cast &amp; Crew of</h3>
+                                            <h2>{{ object.title }}</h2>
+                                            <!-- //== -->
+                                            <div class="title-hd-sm">
+                                                <h4>Creators</h4>
+                                            </div>
+                                            <div class="mvcast-item">
+                                                {% for creator in object.creator.all %}
+                                                <div class="cast-it">
+                                                    <div class="cast-left">
+                                                        <h4>{{ creator.title|first_char }}</h4>
+                                                        <a href="{% url 'Person:person_movies_or_series_list' 'creator' creator.slug %}">{{ creator }}</a>
+                                                    </div>
+                                                    <p>... Creator</p>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <!-- //== -->
+                                            <div class="title-hd-sm">
+                                                <h4>Cast</h4>
+                                                <a href="{{ object.imdb_link }}" target="_blank" class="time allow">
+                                                    Full Cast &amp; Crew <i class="ion-ios-arrow-right"></i>
+                                            </a>
+                                            </div>
+                                            <div class="mvcast-item">
+                                                {% for actor in object.cast.all %}
+                                                    <div class="cast-it">
+                                                        <div class="cast-left">
+                                                            <h4>
+                                                                {{ actor.title|first_char }}
+                                                            </h4>
+                                                            <a href="{% url 'Person:person_movies_or_series_list' 'actor' actor.slug %}">{{ actor.title }}</a>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="moviesrelated" class="tab last">
+                                        <div class="row">
+                                            <h3>Related Series To</h3>
+                                            <h2>{{ object.title }}</h2>
+                                            <div class="topbar-filter">
+                                                <p>Found <span>{{ related_series.count }} series</span> in total</p>
+                                            </div>
+                                            {% for related in related_series %}
+                                                <div class="movie-item-style-2">
+                                                    {% thumbnail related.get_obj_image '250x250' as im %}
+                                                        <img src="{{ im.url }}" alt="" loading="lazy">
+                                                    {% endthumbnail %}
+                                                <div class="mv-item-infor">
+                                                    <h6><a href="{{ related.get_absolute_url }}">{{ related.title }} <span>({{ related.release_date }})</span></a></h6>
+                                                   <p class="rate">
+                                                        <i class="ion-android-star"></i>
+                                                        {% if related.get_object_avg_rate  %}
+                                                            <span>{{ related.get_object_avg_rate }}</span> /5
+                                                            {% else %}
+                                                            <span>N/R</span>
+                                                        {% endif %}
+                                                    </p>
+                                                    <p class="describe">{{ related.description|truncatewords:50 }}</p>
+                                                    <p class="run-time"> Run Time: {{ related.series_length }}
+                                                    <p>Creator:
+                                                    {% for creator in related.creator.all %}
+                                                        <a href="{% url 'Person:person_movies_or_series_list' 'creator' creator.slug %}">{{ creator }}</a>
+                                                    {% endfor %}
+                                                    </p>
+                                                    <p>Stars:
+                                                        {% for actor in related.cast.all %}
+                                                            <a href="{% url 'Person:person_movies_or_series_list' 'actor' actor.slug %}">{{ actor }} </a>,
+                                                        {% endfor %}
+                                                    </p>
+                                                    <p>Genre : {% for genre in related.genre.all %}<a href="{% url 'Category:category_view' object.types genre.slug %}"> <span>{{ genre.title }}</span> </a>{% endfor %}</p>
+
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer section-->
+    {% render_partial 'Main:footer_partial' %}
+    <!-- end of footer section-->
+{% include 'comment/update_popup.html' %}
+{% endblock %}

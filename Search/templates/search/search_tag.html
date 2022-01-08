@@ -1,0 +1,15 @@
+<form action="{% url 'Search:search_view' %}" autocomplete="off" id="id_search_form">
+<div class="top-search">
+    {{ form }}
+</div>
+</form>
+<div id="result_box" class="not-visible result_box">
+    <div id="view_more" class="text-center view_more_box">
+            <a id="view_more_url" class="vertical-text" href="#">View More ... </a>
+    </div>
+</div>
+
+
+<div class="loader" id="search_loader"></div>
+
+

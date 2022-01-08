@@ -1,0 +1,28 @@
+{% load thumbnail %}
+{% for object in result %}
+<div class="movie_inline movie-item-style-1 search-result-item">
+    <div class="mv-img">
+        <a href="{{ object.get_absolute_url }}">
+        {% thumbnail object.get_obj_image '230x230' as img %}
+            <img class="search_image" src="{{ img.url }}" alt="{{ object.title }} image">
+        {% endthumbnail %}
+        </a>
+        <div class="hvr-inner">
+            <a href="{{ object.get_absolute_url }}"> Read more <i class="fa fa-angle-right"></i> </a>
+        </div>
+        <div class="hvr-pop">
+            <p class="">{{ object.snippet|truncatewords:10 }}</p>
+            <br>
+        </div>
+    </div>
+
+    <div class="mv-item-infor">
+        <h6 class="text-center hvr-bounce-in">
+            <a class="" style="color: white" href="{{ object.get_absolute_url }}">{{ object.title }}</a>
+        </h6>
+    </div>
+    <br>
+</div>
+    {% empty %}
+    <h5 class="text-white-2" style="margin: 15px">Not Found</h5>
+{% endfor %}

@@ -1,0 +1,42 @@
+{% load static %}
+{% load thumbnail %}
+<div class="flex-wrap-movielist">
+            {% if object_list is not None %}
+                    {% for obj in object_list %}
+						<div class="movie-item-style-2 movie-item-style-1">
+                                {% thumbnail obj.get_obj_image '250x250' as im %}
+                                    <img src="{{ im.url  }}" alt="" class="movie-list-images">
+                                {% endthumbnail %}
+							<div class="hvr-inner">
+	            				<a href="{{ obj.get_absolute_url }}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
+                                <br>
+	            			</div>
+							<div class="mv-item-infor">
+								<h6><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h6>
+                                {% if movies.headline %}
+                                    <p>{{ obj.headline|truncatewords:20|safe }}</p>
+                                    {% else %}
+                                    <p>{{ obj.plot|truncatewords:20 }}</p>
+                                    <p>{{ obj.description|truncatewords:20 }}</p>
+                                {% endif %}
+								<p class="rate">
+                                    <img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" width="40" height="40">
+                                    <span><i>{{ obj.get_obj_imdb_rate|default:'N/R' }}</i></span>
+                                </p>
+                                <br>
+                                {% if obj.created %}
+                                <p><i class="fa fa-calendar-times-o"> added in : {{ obj.created }}</i></p>
+                            {% else %}
+                                    <p><i class="fa fa-calendar-times-o"> added in : {{ obj.date }}</i></p>
+                            {% endif %}
+							</div>
+						</div>
+                        {% empty %}
+                        						<div class="movie-item-style-2 movie-item-style-1">
+							<div class="mv-item-infor">
+								<h6><a>No Result found ... </a></h6>
+							</div>
+						</div>
+                    {% endfor %}
+            {% endif %}
+				</div>

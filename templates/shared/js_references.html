@@ -1,0 +1,14 @@
+{% load static %}
+<script src="{% static 'js/infinite_scroll/jquery-3.1.1.min.js' %}"></script>
+{#<script src="{% static 'js/jquery.js' %}" defer></script>#}
+<script src="{% static 'js/plugins.js' %}"></script>
+<script src="{% static 'js/plugins2.js' %}"></script>
+<script src="{% static 'js/infinite_scroll/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite_scroll/infinite.min.js' %}"></script>
+<script src="{% static 'js/routes.js' %}" ></script>
+<script src="{% static 'js/custom.js' %}" ></script>
+
+
+<script type="text/javascript">
+    let next_parameter = '{{ request.next }}';
+</script>

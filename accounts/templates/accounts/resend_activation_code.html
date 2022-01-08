@@ -1,0 +1,29 @@
+{% load static %}
+{% load bootstrap5 %}
+{% load i18n %}
+<div id="resend_code_modal">
+    <div class="login-wrapper" id="login-content">
+    <div class="login-content">
+        <a href="#" class="close">x</a>
+        <h3>Resend Activation Code</h3>
+
+        <div id="waiting" class="not-visible">
+            <div id="status">
+                <span></span><span></span>
+            </div>
+        </div>
+        <form method="post" autocomplete="off" action="#" data-url_root="{% url 'Accounts:resend_activation_code' %}" class="ajax-form">
+            {% csrf_token %}
+            <div class="success-message alert alert-success not-visible"></div>
+            <div class="row">
+                <input type="hidden" name="next" value="{{ request.next }}">
+               {% bootstrap_form form %}
+               <br>
+                <button id="login_submit" class="submit-btns">Next</button>
+           </div>
+        </form>
+        <p class="row text-label">
+        </p>
+    </div>
+</div>
+</div>

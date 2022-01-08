@@ -1,0 +1,10 @@
+{% load bootstrap5 %}
+<form method="post" autocomplete="off" action="{% url 'Comments:comment_delete' pk=object.id %}">
+    {% csrf_token %}
+    <div class="row">
+        <h4>Are you sure you want to delete it?</h4>
+        <br>
+        <button type="submit" class="hvr-float redbtn hover-link">Delete</button>
+    </div>
+</form>
+

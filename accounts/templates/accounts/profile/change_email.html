@@ -1,0 +1,65 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+    Change Email
+{% endblock %}
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+    <div class="hero user-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hero-ct">
+                        <h1>{{ request.user.username }}'s profile</h1>
+                        <ul class="breadcumb">
+                            <li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                            <li><span class="ion-ios-arrow-right"></span>Profile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-single">
+        <div class="container">
+            <div class="row ipad-width">
+                {% render_partial 'Main:sidebar_partial' %}
+                <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div class="form-style-1 user-pro" action="#">
+                        <form class="user ajax-form" method="post" enctype="multipart/form-data" id="profile_form" data-url_root="{% url 'Accounts:change_email' %}">
+                            <div class="success-message alert alert-success not-visible"></div>
+                            {% csrf_token %}
+                            <h4>01. Change Email</h4>
+                            <div class="row">
+                                <div class="col-md-8 form-it">
+                                    {{ form }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button class="redbtn" id="submit_btn">save</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer section-->
+    {% render_partial 'Main:footer_partial' %}
+    <!-- end of footer section-->
+    <!-- userprofile14:04-->
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+            style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;"
+            title="Twitter analytics iframe"></iframe>
+
+
+
+{% endblock %}

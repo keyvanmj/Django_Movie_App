@@ -1,0 +1,11 @@
+{% load bootstrap5 %}
+{% if update %}
+<form method="post" autocomplete="off" action="{% url 'Comments:comment_update' pk=object.id %}" id="update_comment_form">
+    {% csrf_token %}
+    <div class="row">
+        {% bootstrap_form form %}
+        <br>
+        <button class="hvr-bounce-in redbtn hover-link">Update</button>
+    </div>
+</form>
+{% endif %}

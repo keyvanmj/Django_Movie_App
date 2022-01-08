@@ -1,0 +1,30 @@
+{% if page_obj.paginator.num_pages > 1 %}
+					<div class="pagination2">
+                        {% if page_obj.has_previous %}
+						<a id="page_obj" href="?page={{ page_obj.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&blacktriangleleft;</a>
+                            {% else %}
+                            <a><i class="fa fa-angle-left disabled hide"></i></a>
+                        {% endif %}
+                        {% if page_obj.number|add:'-4' > 1 %}
+                        <a id="page_obj" href="?page={{ page_obj.number|add:'-5' }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                        {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <span class="page-link">
+                                {{ i }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                            <a id="page_obj" href="?page={{ i }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+                        {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                        <a id="page_obj" href="?page={{ page_obj.number|add:'5' }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                        {% endif %}
+                    {% if page_obj.has_next %}
+                            <a id="page_obj" href="?page={{ page_obj.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&blacktriangleright;</a>
+                        {% else %}
+                            <a><i class="fa fa-angle-right disabled hide"></i></a>
+                    {% endif %}
+					</div>
+                    {% endif %}

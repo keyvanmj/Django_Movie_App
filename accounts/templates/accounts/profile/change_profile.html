@@ -1,0 +1,113 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+    Profile
+{% endblock %}
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+    <div class="hero user-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hero-ct">
+                        <h1>{{ request.user.username }}'s profile</h1>
+                        <ul class="breadcumb">
+                            <li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                            <li><span class="ion-ios-arrow-right"></span>Profile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-single">
+        <div class="container">
+            <div class="row ipad-width">
+                {% render_partial 'Main:sidebar_partial' %}
+                <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div class="form-style-1 user-pro" action="#">
+                        <form class="user" method="post" enctype="multipart/form-data" id="profile_form">
+                            {% csrf_token %}
+                            <h4>01. Profile details</h4>
+                            <div class="row">
+                                <div class="col-md-6 form-it">
+                                    <label>First name</label>
+                                    {{ form.first_name }}
+                                </div>
+                                <div class="col-md-6 form-it">
+                                    <label>Last name</label>
+                                    {{ form.last_name }}
+                                </div>
+                                <br>
+                                <div class="col-md-6 form-it">
+                                    {{ form.image }}
+                                    <br>
+                                    <div class="">
+                                    <label for="id_image" tabindex="0" class="input_image_trigger">Edit Image</label>
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button class="redbtn" id="submit_btn">save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-style-1 user-pro">
+                            <h4>02. Like or Dislike </h4>
+                            <div class="row scroll">
+                                <div class="col-md-6 form-it">
+                                    <label style="position: -webkit-sticky">Like <i class="fa fa-thumbs-up green"></i></label>
+                                    {% for obj in like_obj %}
+                                        <p>
+                                            You <span>liked</span>
+                                            <a class="hover-link text_search" href="{{ obj.get_absolute_url }}">
+                                                {{ obj.title }}
+                                            </a>
+                                            ({{ obj.types }})
+                                            <br>
+                                        </p>
+                                        {% empty %}
+                                        <p>N/A</p>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-6 form-it">
+                                    <label>Dislike <i class="fa fa-thumbs-down red"></i></label>
+                                    {% for obj in dislike_obj %}
+                                        <p>
+                                            You <span>liked</span>
+                                            <a class="hover-link text_search" href="{{ obj.get_absolute_url }}">
+                                               {{ obj.title }}
+                                            </a>
+                                         ({{ obj.types }})
+                                        </p>
+                                        {% empty %}
+                                        <p>N/A</p>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                                <div class="col-md-6 form-it">
+
+                                    <br>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer section-->
+    {% render_partial 'Main:footer_partial' %}
+    <!-- end of footer section-->
+    <!-- userprofile14:04-->
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+            style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;"
+            title="Twitter analytics iframe"></iframe>
+
+
+{% endblock %}

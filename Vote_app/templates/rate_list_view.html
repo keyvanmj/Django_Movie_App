@@ -1,0 +1,79 @@
+{% extends 'shared/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+    Rated Movies & Series
+{% endblock %}
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+    <div class="hero user-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hero-ct">
+                        <h1>{{ request.user.username }}'s Rated List</h1>
+                        <ul class="breadcumb">
+                            <li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                            <li><span class="ion-ios-arrow-right"></span>Profile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <div class="page-single">
+	<div class="container">
+		<div class="row ipad-width2">
+            {% render_partial 'Main:sidebar_partial' %}
+			<div class="col-md-9 col-sm-12 col-xs-12 infinite-container">
+				<div class="topbar-filter">
+					<p>Your rate in total  :
+                        <span>{{ objects_count }}</span>
+                        {% if 'Movie_App.Models' in queryset_objects and 'Series_App.Models' in queryset_objects %}
+                            Movies & Series
+                            {% elif 'Movie_App.Models' in queryset_objects %}
+                            Movies
+                            {% elif 'Series_App.Models' in queryset_objects %}
+                            Series
+                        {% endif %}
+                    </p>
+
+				</div>
+
+                {% for obj in object_list %}
+                    {% include 'list_templates/list_template.html' with object_list=obj %}
+                    {% empty %}
+                    <p>
+                    <strong>You're Rate List is Empty</strong>
+                    </p>
+                    <br>
+                {% endfor %}
+				<div class="topbar-filter">
+					<label></label>
+                    <div class="infinite" style="display: none;">
+                            Loading...
+                      </div>
+                    {% if page_obj.has_next %}
+                        <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">More</a>
+                    {% endif %}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+    <!-- footer section-->
+    {% render_partial 'Main:footer_partial' %}
+    <!-- end of footer section-->
+    <!-- userprofile14:04-->
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+            style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;"
+            title="Twitter analytics iframe"></iframe>
+
+
+{% endblock %}

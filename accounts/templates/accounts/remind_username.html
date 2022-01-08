@@ -1,0 +1,31 @@
+{% load static %}
+{% load bootstrap5 %}
+<div id="modal2">
+    <div class="login-wrapper" id="restore-content">
+    <div class="login-content">
+        <a href="#" class="close">x</a>
+        <h3>Restore username</h3>
+
+        <div id="waiting" class="not-visible">
+            <div id="status">
+                <span></span><span></span>
+            </div>
+        </div>
+        <form method="post" autocomplete="off" action="#" data-url_root="{% url 'Accounts:remind_username' %}" class="ajax-form">
+            {% csrf_token %}
+            <div class="success-message alert alert-success not-visible"></div>
+            <div class="row">
+               {% bootstrap_form form %}
+               <br>
+                <button type="submit">Restore Username</button>
+           </div>
+        </form>
+        <p class="row text-label">
+        <p>
+            You Have a Account?
+            <a href="#" id="login_modal" class="loginLink hvr-underline-from-left" data-open="login_modal">login here</a>
+        </p>
+        </p>
+    </div>
+</div>
+</div>

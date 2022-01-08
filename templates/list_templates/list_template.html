@@ -1,0 +1,35 @@
+{% load static %}
+{% load thumbnail %}
+{% load custom_tag %}
+{% url 'Vote:rate_list_view' as rate_list_url %}
+
+{% user_rate obj as object %}
+
+<div class="movie-item-style-2 userrate infinite-item">
+    {% thumbnail obj.get_obj_image '200x200' as im %}
+        <img src="{{ im.url }}" alt="">
+    {% endthumbnail %}
+    <div class="mv-item-infor">
+        <h6><a href="{{ obj.get_absolute_url }}">{{ obj.title }} <span>({{ obj.release_date }})</span></a></h6>
+        <p class="rate">
+            {% if rate_list_url == request.path_info %}
+                <span>
+                    {% for i in object %}
+                        Your Rate to this {{ obj.types }} : {{ i.rate }}
+                        {% range_tag i.rate as range %}
+                        {% for number in range %}
+                            <i class="fa fa-star"></i>
+                        {% endfor %}
+                    {% endfor %}
+                </span>
+                {% else %}
+                <img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" style="width:50px">
+                <span>{{ obj.get_obj_imdb_rate }}</span>
+            {% endif %}
+        </p>
+
+        <br>
+        <p class="time sm">{% if obj.date %}{{ obj.date }}{% else %}{{ obj.created }}{% endif %}</p>
+        <p>{{ obj.snippet|truncatewords:70 }}</p>
+    </div>
+</div>

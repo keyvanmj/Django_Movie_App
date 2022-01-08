@@ -1,0 +1,71 @@
+{% extends 'shared/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+Movie List
+{% endblock %}
+{% block content %}
+    {% url 'Search:search_view' as search_url %}
+    {% url 'Movies:movie_list' as movie_url %}
+    {% url 'Category:select_filter_view' as filter_view_url %}
+
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+
+<div class="hero common-hero">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="hero-ct">
+                    {% if 'search/result' in request.path %}
+                        {% if q == '' %}
+					        <h1>all movies</h1>
+                        {% else %}
+                            <h1>you searched for : {{ q }}</h1>
+                        {% endif %}
+                        {% else %}
+                        <h1> movie listing</h1>
+                    {% endif %}
+					<ul class="breadcumb">
+						<li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                            <li> <span class="ion-ios-arrow-right"></span> movie listing</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="page-single">
+	<div class="container">
+		<div class="row ipad-width">
+			<div class="col-md-8 col-sm-12 col-xs-12">
+				<div class="topbar-filter">
+                    {% if '/search/result' in request.path_info %}
+					<p>Found <span>{{ object_list_count }} results</span> in total</p>
+                    {% elif '/movies/movie_list' or '/movies/top_movies/' in request.path_info %}
+					<p id="object_list_count">Found <span>{{ object_length }} </span>movies</p>
+                     {% elif '/category/list/filter/' in request.get_full_path %}
+                        <p>Found <span>{{ object_list|length }} results</span> in total</p>
+                    {% endif %}
+				</div>
+                <div class="object_list_body">
+                    {% include 'list_templates/object_list_template.html' with object_list=object_list %}
+                </div>
+				<div class="topbar-filter">
+					<label></label>
+                    <div id="paginate">
+                        {% include 'shared/paginate/paginate.html' with page_obj=page_obj %}
+                    </div>
+				</div>
+			</div>
+                {% include 'genres/select_genre_filter.html' with form=side_filter_form %}
+		</div>
+	</div>
+</div>
+<!-- footer section-->
+        {% render_partial 'Main:footer_partial' %}
+<!-- end of footer section-->
+{% endblock %}

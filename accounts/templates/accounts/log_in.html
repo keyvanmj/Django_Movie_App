@@ -1,0 +1,31 @@
+{% load static %}
+{% load bootstrap5 %}
+<div id="login_modal">
+    <div class="login-wrapper scroll_div" id="login-content">
+    <div class="login-content">
+        <a href="#" class="close">x</a>
+        <h3>Login</h3>
+
+        <div id="waiting" class="not-visible">
+            <div id="status">
+                <span></span><span></span>
+            </div>
+        </div>
+        <form method="post" autocomplete="off" id="id_login_form" action="#" data-url_root="{% url 'Accounts:log_in' %}" class="ajax-form">
+            {% csrf_token %}
+            <div class="success-message alert alert-success not-visible"></div>
+            <div class="row">
+                <input type="hidden" name="next" value="{{ request.next }}">
+               {% bootstrap_form form %}
+                <label for="id_remember_me" class="remember_me_label">Remember Me</label>
+               <br>
+                <button id="login_submit" class="submit-btns">Login</button>
+           </div>
+        </form>
+        <p class="row text-label">
+            <li>Forget username ? <a id="restore-modal" data-open="modal2" href="#" class="info-msg hvr-sweep-to-right">Restore username</a></li>
+            <li>Forget password ? <a href="{% url 'Accounts:restore_password' %}" class="info-msg hvr-sweep-to-left">Restore password</a></li>
+        </p>
+    </div>
+</div>
+</div>

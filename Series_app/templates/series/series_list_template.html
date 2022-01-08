@@ -1,0 +1,31 @@
+{% load thumbnail %}
+<div class="flex-wrap-movielist">
+                    {% for series in object_list %}
+						<div class="movie-item-style-2 movie-item-style-1">
+                                {% thumbnail series.image '250x250' as im %}
+                                    <img src="{{ im.url  }}" alt="" class="movie-list-images">
+                                {% endthumbnail %}
+							<div class="hvr-inner">
+	            				<a href="{{ series.get_absolute_url }}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
+	            			</div>
+							<div class="mv-item-infor">
+								<h6><a href="{{ series.get_absolute_url }}">{{ series.title }}</a></h6>
+                                {% if movies.headline %}
+                                    <p>{{ series.headline|truncatewords:20|safe }}</p>
+                                    {% else %}
+                                    <p>{{ series.snippet|truncatewords:20 }}</p>
+
+                                {% endif %}
+								<p class="rate"><i class="ion-android-star"></i><span>{{ series.get_movies_rate|default:'0'|join:'' }}</span> /5</p>
+                                <br>
+                                <p><i class="fa fa-calendar-times-o"> added in : {{ series.date }}</i></p>
+							</div>
+						</div>
+                        {% empty %}
+                        						<div class="movie-item-style-2 movie-item-style-1">
+							<div class="mv-item-infor">
+								<h6><a>No Series found ... </a></h6>
+							</div>
+						</div>
+                    {% endfor %}
+				</div>

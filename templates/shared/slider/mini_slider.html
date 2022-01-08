@@ -1,0 +1,77 @@
+{% load static %}
+{% load thumbnail %}
+{% for obj in filter_obj|slice:'4' %}
+    <!-- for movies -->
+    {% if obj.types == 'Movie'  %}
+                {% thumbnail obj.get_obj_image '150x150' as im %}
+                    <div class="movie-item" aria-hidden="true">
+                        <div class="mv-img">
+                            <a href="{{ obj.get_absolute_url }}">
+                                <img src="{{ im.url }}" alt="" class="mini-slider" width="185" height="284" loading="lazy">
+                            </a>
+                        </div>
+                        <div class="hvr-inner">
+                            <a href="{{ obj.get_absolute_url }}" tabindex="-{{ forloop.counter }}"> Read more <i
+                                    class="fa fa-caret-right"></i></a>
+                        </div>
+                        <div class="title-in">
+                            <p class="font-bold"><a href="{{ obj.get_absolute_url }}" tabindex="-{{ forloop.counter }}">{{ obj.title }}</a></p>
+                            {% if filter_obj == popular_movies %}
+                                <p>
+                                    <span>views</span> :
+                                    <i>{{ obj.movie_hits.count }}</i>
+                                </p>
+                            {% elif filter_obj == release_date_movies %}
+                                <p>
+                                    <i class="">({{ obj.release_date }})</i>
+                                </p>
+                            {% elif filter_obj == top_rated_movie %}
+                                <p>
+                                <i>
+                                    <img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" style="width:45px">
+                                </i><span>{{ obj.get_obj_imdb_rate }}</span>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endthumbnail %}
+    {% endif %}
+
+    {% if obj.types == 'Series'  %}
+
+                {% thumbnail obj.get_obj_image '150x150' as im %}
+
+                    <div class="movie-item" aria-hidden="true">
+                        <div class="mv-img">
+                            <a href="{{ obj.get_absolute_url }}">
+                                <img src="{{ im.url }}" alt="" class="mini-slider" width="185" height="284" loading="lazy">
+                            </a>
+                        </div>
+                        <div class="hvr-inner">
+                            <a href="{{ obj.get_absolute_url }}" tabindex="-{{ forloop.counter }}"> Read more <i
+                                    class="fa fa-caret-right"></i></a>
+                        </div>
+                        <div class="title-in">
+                            <p class="font-bold pull-left"><a href="{{ obj.get_absolute_url }}" tabindex="-{{ forloop.counter }}">{{ obj.title }}</a></p>
+                            {% if filter_obj == popular_series %}
+                                <p>
+                                    <span>views</span> :
+                                    <i>{{ obj.series_hits.count }}</i>
+                                </p>
+                            {% elif filter_obj == release_date_series %}
+                                <p>
+                                    ({{ obj.release_date }})
+                                </p>
+                            {% elif filter_obj == top_rated_series %}
+                                <p>
+                                <i>
+                                    <img src="{% static 'images/imdb-logo-transparent.png' %}" alt="imdb rating" style="width:45px">
+                                </i><span>{{ obj.get_obj_imdb_rate }}</span>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endthumbnail %}
+    {% endif %}
+
+{% endfor %}

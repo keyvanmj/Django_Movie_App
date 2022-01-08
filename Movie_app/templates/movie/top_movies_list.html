@@ -1,0 +1,78 @@
+{% extends 'shared/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+    Top Movie Listing
+{% endblock %}
+{% block content %}
+    {% url 'Category:category_view' object_list.type object_list.genre.all  as category_url %}
+    {% url 'Movies:top_movies_list' as top_movies_list %}
+    {% url 'Person:person_movies_or_series_list' person_role person_slug as person_url  %}
+
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+
+<div class="hero common-hero">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="hero-ct">
+                    {% if top_movies_list == request.path_info %}
+					<h1> top movie listing</h1>
+					<ul class="breadcumb">
+						<li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+						<li> <span class="ion-ios-arrow-right"></span>top movies</li>
+					</ul>
+                        {% elif person_url == request.path_info %}
+                        <h1>{{ person_role }} listing </h1>
+                            <ul class="breadcumb">
+                                <li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+                                <li> <span class="ion-ios-arrow-right"></span>{{ person_slug }} list</li>
+                            </ul>
+                        {% else %}
+                            <h1>Category : {{ category_slug }}</h1>
+	    				    <ul class="breadcumb">
+    		    				<li class="active"><a href="{% url 'Main:home' %}">Home</a></li>
+    			    			<li> <span class="ion-ios-arrow-right"></span>{{ category_slug}} list</li>
+					        </ul>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="page-single">
+	<div class="container">
+		<div class="row ipad-width">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="topbar-filter">
+					{% if '/search/result' in request.path_info %}
+					<p>Found <span>{{ object_list_count }} results</span> in total</p>
+                    {% elif '/movies/top_movies' in request.path_info %}
+					<p id="object_list_count">Found <span>{{ object_list.count }} </span>movies</p>
+                     {% elif '/category/list/filter/' in request.get_full_path %}
+                        <p>Found <span>{{ object_list|length }} results</span> in total</p>
+                    {% endif %}
+				</div>
+                <div class="object_list_body">
+                {% include 'list_templates/object_list_template.html' with object_list=object_list %}
+                </div>
+				<div class="topbar-filter">
+					<label></label>
+                    {% include 'shared/paginate/paginate.html' with page_obj=page_obj %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- footer section-->
+        {% render_partial 'Main:footer_partial' %}
+<!-- end of footer section-->
+
+<!-- moviegrid07:38-->
+<iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe"></iframe></body>
+
+{% endblock %}

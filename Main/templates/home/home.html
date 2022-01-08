@@ -1,0 +1,301 @@
+{% extends 'shared/base.html' %}
+{% load cache %}
+{% load embed_video_tags %}
+{% load static %}
+{% load thumbnail %}
+{% load render_partial %}
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block content %}
+    <!-- BEGIN | Header -->
+    {% render_partial 'Main:header_partial' %}
+    <!-- END | Header -->
+
+    <div class="slider movie-items">
+        <div class="container">
+            <div class="row">
+                <div class="slick-multiItemSlider cursor_pointer_active">
+                    {% for movie in movies|slice:'8' %}
+                        <div aria-live="polite" class="slick-list draggable">
+                            <div class="slick-track">
+                            <div class="item slick-slider">
+
+                                {% thumbnail movie.get_obj_image '300x300' as im %}
+
+                                    <div class="movie-item slick-slide slick-active" aria-hidden="true">
+                                        <div class="mv-img">
+                                            <a href="#">
+                                                <img src="{{ im.url }}" alt="" class="main-slider-images" loading="lazy">
+                                            </a>
+                                        </div>
+                                        <div class="title-in">
+
+                                            <h6 class="text-left">
+                                                <a href="{{ movie.get_absolute_url }}" tabindex="{{ forloop.counter }}">
+                                                    {{ movie.title }}
+                                                </a>
+                                            </h6>
+                                            <br>
+                                            <div class="cate">
+                                                {% for genre in movie.genre.all|slice:2 %}
+                                                    <span class="{{ forloop.counter0|yesno:'blue,yell' }}"><a
+                                                            href="#">{{ genre }}</a></span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endthumbnail %}
+                            </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="movie-items">
+        <div class="container">
+            <div class="row ipad-width">
+                <div class="col-md-8">
+                    <div class="title-hd">
+                        <h2>Movies</h2>
+                    </div>
+                    <div class="tabs">
+                        <ul class="tab-links">
+                            <li class="active">
+                                <input type="radio" id="tab_first">
+                                <label class="cursor_pointer" data-url_root="#tab1" for="tab_first">#Popular</label>
+                            </li>
+
+                            <li>
+                                <input type="radio" id="tab_second">
+                                <label class="cursor_pointer" data-url_root="#tab2" for="tab_second">#Release date</label>
+                            </li>
+
+                            <li>
+                                <input type="radio" id="tab_third">
+                                <label class="cursor_pointer" data-url_root="#tab3" for="tab_third">#Top rated</label>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab1" class="tab active">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Movies:filter_movie_list' 'popular' %}" class="viewall">View all <i
+                                            class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if popular_movies %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=popular_movies %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab2" class="tab">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Movies:filter_movie_list' 'release_date' %}" class="viewall">View
+                                        all <i class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if release_date_movies %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=release_date_movies %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Movies:filter_movie_list' 'top_rated' %}" class="viewall">View all
+                                        <i class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if top_rated_movie %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=top_rated_movie %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="title-hd">
+                        <h2>TV Series</h2>
+                    </div>
+                    <div class="tabs">
+                        <ul class="tab-links">
+                            <li class="active">
+                                <input type="radio" id="tab_fourth">
+                                <label class="cursor_pointer" data-url_root="#tab21" for="tab_fourth">#Popular</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="tab_fifth">
+                                <label class="cursor_pointer" data-url_root="#tab22" for="tab_fifth">#Release Date</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="tab_sixth">
+                                <label class="cursor_pointer" data-url_root="#tab23" for="tab_sixth">#Top Rated</label>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab21" class="tab active">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Series:filter_series_list' 'popular' %}" class="viewall">View all
+                                        <i class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if popular_series %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=popular_series %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab22" class="tab">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Series:filter_series_list' 'release_date' %}" class="viewall">View
+                                        all <i class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if release_date_series %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=release_date_series %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab23" class="tab">
+                                <div class="title-hd pull-right">
+                                    <a href="{% url 'Series:filter_series_list' 'top_rated' %}" class="viewall">View all
+                                        <i class="fa fa-angle-right"></i></a>
+                                </div>
+                                <div class="row">
+                                    <div class="slick-multiItem">
+                                        {% if top_rated_series %}
+                                            {% include 'shared/slider/mini_slider.html' with filter_obj=top_rated_series %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="sidebar">
+                        <div class="ads">
+                            <img src="{% static 'images/uploads/ads1.png' %}" alt="" width="336" height="296">
+                        </div>
+                    <div class="tabs">
+                        <ul class="tab-links">
+                            <li class="active">
+                                <input type="radio" id="tab_movie_category">
+                                <label class="cursor_pointer tab_text" data-url_root="#tab100" for="tab_movie_category">Movie Category</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="tab_series_category">
+                                <label class="cursor_pointer tab_text" data-url_root="#tab200" for="tab_series_category">Series Category</label>
+                            </li>
+                        </ul>
+                        <div class="tab-content category-tab">
+                            <div id="tab100" class="tab active">
+                                <table class="main-table col-md-11 col-sm-6">
+                                <thead>
+                                </thead>
+                                <tbody class="tbody">
+                                    {% for cat in category %}
+                                        <tr>
+                                            <th class="th">
+                                                <h6><a href="{% url 'Category:category_view' 'type=Movie' cat.slug %}">{{ cat.title }}</a></h6>
+                                            </th>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                            <div id="tab200" class="tab">
+                                <table class="main-table col-md-11 col-sm-6">
+                                <thead>
+                                </thead>
+                                <tbody class="tbody">
+                                    {% for cat in category %}
+                                        <tr>
+                                            <th class="th">
+                                                <h6 class="pull-right transition"><a href="{% url 'Category:category_view' 'type=Series' cat.slug %}">{{ cat.title }}</a></h6>
+                                            </th>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="trailers">
+        <div class="container">
+            <div class="row ipad-width">
+                <div class="col-md-12">
+                    <div class="title-hd">
+                        <h2>Latest Trailer</h2>
+                    </div>
+                    <div class="videos">
+                        <div class="slider-for-2 video-ft slick-initialized slick-slider">
+                                <div class="slideshow">
+                                {% cache 50000 merged_models %}
+                                    <div class="slides">
+                                        {% for obj in merged_models %}
+                                            <div class="slide {% if forloop.first %}active{% endif %}">
+                                                {% video obj.trailer 'medium' %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endcache %}
+                                </div>
+                        </div>
+                        <div class="slider-nav-2 thumb-ft slick-initialized slick-slider slick-vertical">
+                            <button type="button" data-role="none" class="slick-prev prev slick-arrow"
+                                    aria-label="Previous"
+                                    role="button" style="">Previous
+                            </button>
+                            <div aria-live="polite" class="slick-list draggable" style="height: 267px;">
+                                <div class="slick-track"
+                                     style=" height: 100%;transform: translate3d(0px, -400px, 0px);"
+                                     role="listbox">
+                                    {% for obj in merged_models %}
+                                        <div class="item slick-slide slick-cloned points {% if forloop.first %}active{% endif %}" style="width: 329px;">
+                                            <div class="">
+                                                {% thumbnail obj.get_obj_image '100x100' as img  %}
+                                                <img src="{{ img.url }}" alt="{{ obj.title }} image"
+                                                     width="100" height="56" loading="lazy">
+                                                {% endthumbnail %}
+                                            </div>
+                                            <div class="trailer-infor">
+                                                <h4 class="desc">{{ obj.title }}</h4>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <button type="button" data-role="none" class="slick-next slick-arrow next" aria-label="Next"
+                                    role="button" style="">Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+            {% render_partial 'Main:footer_partial' %}
+
+
+{% endblock %}
