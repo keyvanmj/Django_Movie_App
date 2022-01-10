@@ -10,15 +10,3 @@ Django 3
 <li>
 javascript and jquery
 </li>
-
-<br>
-
-Screenshots:
-
-<br>
-![Home Page](../Home.png)
-<hr>
-![Series Detail Page](../Series_detail.png)
-<hr>
-
-![Profile Page](../Profile.png)
